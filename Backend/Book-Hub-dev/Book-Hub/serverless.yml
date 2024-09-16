@@ -1,0 +1,80 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: bookhub
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: Book-Hub
+
+provider:
+  name: aws
+  runtime: python3.12
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_DATABASE: ${env:DB_DATABASE}
+    DB_CLUSTER_IDENTIFIER: bookhub
+    EVENT_BUS_NAME: BookhubEventBus
+    EVENT_BUS_ARN: arn:aws:events:${aws:region}:${aws:accountId}:event-bus/${self:provider.environment.EVENT_BUS_NAME}
+
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - rds-data:ExecuteStatement
+            - rds-data:BatchExecuteStatement
+          Resource: "arn:aws:rds:${aws:region}:*:cluster:${self:provider.environment.DB_CLUSTER_IDENTIFIER}"
+        - Effect: Allow
+          Action:
+            - events:PutEvents
+          Resource: ${self:provider.environment.EVENT_BUS_ARN}
+
+functions:
+  Book-Hub:
+    handler: main.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+      - eventBridge:
+          eventBus: BookhubEventBus
+          pattern:
+            source:
+              - com.bookhub
+            detail-type:
+              - UserCreated
+              - UserUpdated
+              - UserLoggedIn
+              - PasswordReset
+              - BookAdded
+              - BookDeleted
+              - BookBorrowed
+              - BookReturned
+              - CollectionCreated
+              - CollectionDeleted
+              - ResourceAdded
+              - ResourceDeleted
+
+
+
+plugins:
+  - serverless-python-requirements
+  - serverless-dotenv-plugin
+
+custom:
+  pythonRequirements:
+    
+    requirementsFile: requirements.txt
+    noDeploy:
+      - docutils
+      - jmespath
+      - pip
+      - python-dateutil
+      - setuptools
+      - six
+      - tensorboard
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**

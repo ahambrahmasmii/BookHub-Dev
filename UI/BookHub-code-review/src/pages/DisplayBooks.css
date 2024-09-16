@@ -1,0 +1,67 @@
+.modal {
+  position: absolute;
+  top: 40px; /* Remove fixed position */
+  left: 40px; /* Remove fixed position */
+  right: 40px; /* Remove fixed position */
+  bottom: 40px; /* Remove fixed position */
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px; /* Adjust padding if necessary */
+  outline: none;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%; /* Ensure full height */
+}
+
+.close-button {
+  align-self: flex-end;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pdf-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pdf-controls button {
+  margin: 0 10px;
+  padding: 5px 10px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pdf-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 600px;
+  font-size: 24px;
+  background-color: #f0f0f0;
+}
